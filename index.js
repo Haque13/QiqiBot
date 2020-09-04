@@ -192,7 +192,7 @@ __**Command list**__
       "⏭️  **|**  Okiee.. I'll play the next song for you!~ 😉"
     );
 
-  } else if (command === "stop" || command === "quit") {
+  } else if (command === "stop" || command === "uit") {
     if (!message.member.voice.channel)
       return message.channel.send(
         "Sorry, but you have to be in a voice channel to stop the music!"
