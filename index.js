@@ -55,7 +55,7 @@ __**Command list**__
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
       return message.channel.send(
-        "Maafkan aku, tapi kamu harus berada di voice channel jika ingin mendengarkanku bernyanyi!"
+        "Sorry, but you have to be in a voice channel to play a music!"
       );
     const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT")) {
@@ -76,7 +76,7 @@ __**Command list**__
         await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
       }
       return message.channel.send(
-        `✅  **|**  Playlist: **\`${playlist.title}\`** sudah kutambahkan ke daftar selanjutnya 😉`
+        `✅  **|**  Playlist: **\`${playlist.title}\`** has been added to the queue! 😉`
       );
     } else {
       try {
@@ -87,12 +87,12 @@ __**Command list**__
           var video = await youtube.getVideoByID(videos[0].id);
           if (!video)
             return message.channel.send(
-              "🆘  **|**  Maafkan aku, Aku tidak dapat menemukan hasil apapun 😢"
+              "🆘  **|**  Sorry, I dont't find anything 😢"
             );
         } catch (err) {
           console.error(err);
           return message.channel.send(
-            "🆘  **|**  Maafkan aku, Aku tidak dapat menemukan hasil apapun 😢"
+            "🆘  **|**  Sorry, I dont't find anything 😢"
           );
         }
       }
@@ -103,7 +103,7 @@ __**Command list**__
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
       return message.channel.send(
-        "Maafkan aku, tapi kamu harus berada di voice channel jika ingin memilih lagu!"
+        "Sorry, but you have to be in a voice channel to search a music!"
       );
     const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT")) {
@@ -124,7 +124,7 @@ __**Command list**__
         await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
       }
       return message.channel.send(
-        `✅  **|**  Playlist: **\`${playlist.title}\`** sudah kutambahkan ke daftar selanjutnya 😉`
+        `✅  **|**  Playlist: **\`${playlist.title}\`** has been added to the queue! 😉`
       );
     } else {
       try {
@@ -170,7 +170,7 @@ __**Command list**__
         } catch (err) {
           console.error(err);
           return message.channel.send(
-            "🆘  **|**  Maafkan aku, Aku tidak dapat menemukan hasil apapun 😢"
+            "🆘  **|**  Sorry, I don't find anything 😢"
           );
         }
       }
@@ -181,61 +181,61 @@ __**Command list**__
   } else if (command === "skip" || command === "s") {
     if (!message.member.voice.channel)
       return message.channel.send(
-        "Maafkan aku, tapi kamu harus berada di voice channel jika ingin melewatkan lagu!"
+        "Sorry, but you have to be in a voice channel to skip a song!"
       );
     if (!serverQueue)
-      return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+      return message.channel.send("I'm not currently singing!~ 😤");
     serverQueue.connection.dispatcher.end(
       "[runCmd] Skip command has been used"
     );
     return message.channel.send(
-      "⏭️  **|**  Baiklaahh.. aku akan menyanyikan lagu yg lain untukmu 😉"
+      "⏭️  **|**  Okiee.. I'll play the next song for you!~ 😉"
     );
 
   } else if (command === "stop" || command === "quit") {
     if (!message.member.voice.channel)
       return message.channel.send(
-        "Maafkan aku, tapi kamu harus berada di voice channel jika ingin menghentikanku bernyanyi!"
+        "Sorry, but you have to be in a voice channel to stop the music!"
       );
     if (!serverQueue)
-      return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+      return message.channel.send("I'm not currently singing!~ 😤");
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end(
       "[runCmd] Stop command has been used"
     );
     return message.channel.send(
-      "⏹️  **|**  Terimakasih sudah mendengarkan, sampai jumpa! 👋"
+      "⏹️  **|**  Paipai! 👋"
     );
 
   } else if (command === "volume" || command === "vol") {
     if (!message.member.voice.channel)
       return message.channel.send(
-        "Maafkan aku, tapi kamu harus berada di voice channel jika ingin mengatur suara ku!"
+        "Sorry, but you have to be in a voice channel to change the volume!"
       );
     if (!serverQueue)
-      return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+      return message.channel.send("I'm not currently singing!~ 😤");
     if (!args[1])
       return message.channel.send(
-        `Volume saat ini adalah: **\`${serverQueue.volume}%\`**`
+        `Current volume is: **\`${serverQueue.volume}%\`**`
       );
     if (isNaN(args[1]) || args[1] > 100)
       return message.channel.send(
-        "Volume hanya bisa di atur antara **`1`** - **`100`**"
+        "Volume can only be set between **`1`** - **`100`**"
       );
     process.env.VOLUME = args[1];
     serverQueue.connection.dispatcher.setVolume(args[1] / 100);
-    return message.channel.send(`Sudah ku ubah volume nya ke: **\`${args[1]}%\`**`);
+    return message.channel.send(`I've set the volume to: **\`${args[1]}%\`** 😉`);
 
   } else if (command === "nowplaying" || command === "np") {
     if (!serverQueue)
-      return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+      return message.channel.send("I'm not currently singing!~ 😤");
     return message.channel.send(
       `🎶  **|**  Now Playing: **\`${serverQueue.songs[0].title}\`**`
     );
 
   } else if (command === "queue" || command === "q") {
     if (!serverQueue)
-      return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+      return message.channel.send("I'm not currently singing!~ 😤");
     let embedQueue = new MessageEmbed()
       .setColor(0xa51aff)
       .setAuthor("Song queue", message.author.displayAvatarURL())
@@ -249,17 +249,17 @@ __**Command list**__
     if (serverQueue && serverQueue.playing) {
       serverQueue.playing = false;
       serverQueue.connection.dispatcher.pause();
-      return message.channel.send("⏸  **|**  Oke, Aku istirahat dulu 😅");
+      return message.channel.send("⏸  **|**  Okiee, I'll take a rest, then~ 😅");
     }
-    return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+    return message.channel.send("I'm not currently singing!~ 😤");
 
   } else if (command === "resume" || command === "res") {
     if (serverQueue && !serverQueue.playing) {
       serverQueue.playing = true;
       serverQueue.connection.dispatcher.resume();
-      return message.channel.send("▶  **|**  Aku lanjut yaa!.. 😉");
+      return message.channel.send("▶  **|**  Continuing!.. 😉");
     }
-    return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+    return message.channel.send("I'm not currently singing!~ 😤");
 
   } else if (command === "loop") {
     if (serverQueue) {
@@ -270,7 +270,7 @@ __**Command list**__
         }\`**`
       );
     }
-    return message.channel.send("Aku tidak sedang bernyanyi! hmph!~ 😤");
+    return message.channel.send("I'm not currently singing!~ 😤");
   }
 });
 
@@ -312,7 +312,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
     if (playlist) return;
     else
       return message.channel.send(
-        `✅  **|**  **\`${song.title}\`** sudah kutambahkan ke daftar selanjutnya 😉`
+        `✅  **|**  **\`${song.title}\`** has been added to the queue! 😉`
       );
   }
   return;
@@ -341,7 +341,7 @@ function play(guild, song) {
   serverQueue.textChannel.send({
     embed: {
       color: 0xa51aff,
-      description: `🎶  **|**  Aku akan menyanyikan: **\`${song.title}\`**`
+      description: `🎶  **|**  Playing: **\`${song.title}\`**`
     }
   });
 }
