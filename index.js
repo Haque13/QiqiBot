@@ -13,7 +13,7 @@ const queue = new Map();
 
 bot.on("ready", () => {
     console.log(`[READY] ${bot.user.tag} has been successfully booted up!`)
-    bot.user.setActivity("with ghost!👻 | type qhelp for command list")
+    bot.user.setActivity("to ghost voices!👻 | type qhelp for command list" , { type: 'LISTENING' })
   });
 bot.on("warn", console.warn);
 bot.on("error", console.error);
