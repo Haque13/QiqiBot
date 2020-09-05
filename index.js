@@ -8,7 +8,7 @@ const bot = new Client({
     disableMentions: "all"
 });
 
-const PREFIX = q;
+const PREFIX = "q";
 const youtube = new YouTube(process.env.YTAPI_KEY);
 const queue = new Map();
 
