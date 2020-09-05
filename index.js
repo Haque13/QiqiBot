@@ -318,6 +318,14 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
   return;
 }
 
+function chunk(array, chunkSize) {
+  const temp = [];
+  for (let i = 0; i < array.length; i+= chunkSize) {
+      temp.push(array.slice(i, i + chunkSize));
+  }
+  return temp;
+}
+
 function play(guild, song) {
   const serverQueue = queue.get(guild.id);
 
