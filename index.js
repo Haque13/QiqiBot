@@ -272,7 +272,7 @@ if (!serverQueue) {
         voiceChannel: voiceChannel,
         connection: null,
         songs: [],
-        volume: 100,
+        volume: process.env.VOLUME,
         playing: true,
         loop: false
     };
