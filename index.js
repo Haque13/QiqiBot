@@ -87,12 +87,12 @@ __**Command list**__
           var video = await youtube.getVideoByID(videos[0].id);
           if (!video)
             return message.channel.send(
-              "🆘  **|**  Sorry, I dont't find anything 😢"
+              "🆘  **|**  Sorry, I couldn't find anything 😢"
             );
         } catch (err) {
           console.error(err);
           return message.channel.send(
-            "🆘  **|**  Sorry, I dont't find anything 😢"
+            "🆘  **|**  Sorry, I couldn't find anything 😢"
           );
         }
       }
@@ -170,7 +170,7 @@ __**Command list**__
         } catch (err) {
           console.error(err);
           return message.channel.send(
-            "🆘  **|**  Sorry, I don't find anything 😢"
+            "🆘  **|**  Sorry, I couldn't find anything 😢"
           );
         }
       }
@@ -257,7 +257,7 @@ __**Command list**__
     if (serverQueue && !serverQueue.playing) {
       serverQueue.playing = true;
       serverQueue.connection.dispatcher.resume();
-      return message.channel.send("▶  **|**  Continuing!.. 😉");
+      return message.channel.send("▶  **|**  Resuming!.. 😉");
     }
     return message.channel.send("I'm not currently singing!~ 😤");
 
