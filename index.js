@@ -226,124 +226,101 @@ __**Command list**__
     serverQueue.connection.dispatcher.setVolume(args[1] / 100);
     return message.channel.send(`I've set the volume to: **\`${args[1]}%\`** 😉`);
 
-  } else if (command === "nowplaying" || command === "np") {
-    if (!serverQueue)
-      return message.channel.send("I'm not currently singing!~ 😤");
-    return message.channel.send(
-      `🎶  **|**  Now Playing: **\`${serverQueue.songs[0].title}\`**`
-    );
-
   } else if (command === "queue" || command === "q") {
-    if (!serverQueue)
-      return message.channel.send("I'm not currently singing!~ 😤");
+    if (!serverQueue) return message.channel.send({embed: {color: "RED", description: "There is nothing playing"}});
     let embedQueue = new MessageEmbed()
-      .setColor(0xa51aff)
-      .setAuthor("Song queue", message.author.displayAvatarURL())
-      .setDescription(
-        `${serverQueue.songs.map(song => `**-** ${song.title}`).join("\n")}`
-      )
-      .setFooter(`• Now Playing: ${serverQueue.songs[0].title}`);
+        .setColor("BLUE")
+        .setAuthor("Song queue", message.author.displayAvatarURL())
+        .setDescription(`${serverQueue.songs.map(song => `**-** ${song.title}`).join("\n")}`)
+        .setFooter(`• Now Playing: ${serverQueue.songs[0].title}`);
     return message.channel.send(embedQueue);
 
-  } else if (command === "pause" || command === "ps") {
+} else if (command === "pause") {
     if (serverQueue && serverQueue.playing) {
-      serverQueue.playing = false;
-      serverQueue.connection.dispatcher.pause();
-      return message.channel.send("⏸  **|**  Okiee, I'll take a rest, then~ 😅");
+        serverQueue.playing = false;
+        serverQueue.connection.dispatcher.pause();
+        return message.channel.send({embed: {color: "GREEN", description: "⏸  **|**  Paused the music for you"}});
     }
-    return message.channel.send("I'm not currently singing!~ 😤");
+    return message.channel.send({embed: {color: "RED", description: "There is nothing playing"}});
 
-  } else if (command === "resume" || command === "res") {
+} else if (command === "resume") {
     if (serverQueue && !serverQueue.playing) {
-      serverQueue.playing = true;
-      serverQueue.connection.dispatcher.resume();
-      return message.channel.send("▶  **|**  Continuing!.. 😉");
+        serverQueue.playing = true;
+        serverQueue.connection.dispatcher.resume();
+        return message.channel.send({embed: {color: "GREEN", description: "▶  **|**  Resumed the music for you"}});
     }
-    return message.channel.send("I'm not currently singing!~ 😤");
-
-  } else if (command === "loop") {
+    return message.channel.send({embed: {color: "RED", description: "There is nothing playing"}});
+} else if (command === "loop") {
     if (serverQueue) {
-      serverQueue.loop = !serverQueue.loop;
-      return message.channel.send(
-        `🔁  **|**  Loop is **\`${
-          serverQueue.loop === true ? "enabled" : "disabled"
-        }\`**`
-      );
-    }
-    return message.channel.send("I'm not currently singing!~ 😤");
-  }
+        serverQueue.loop = !serverQueue.loop;
+        return message.channel.send({embed: {color: "GREEN", description: `🔁  **|**  Loop is **\`${serverQueue.loop === true ? "enabled" : "disabled"}\`**`}});
+    };
+    return message.channel.send({embed: {color: "RED", description: "There is nothing playing"}});
+}
 });
 
 async function handleVideo(video, message, voiceChannel, playlist = false) {
-  const serverQueue = queue.get(message.guild.id);
-  const song = {
+const serverQueue = queue.get(message.guild.id);
+const song = {
     id: video.id,
     title: Util.escapeMarkdown(video.title),
     url: `https://www.youtube.com/watch?v=${video.id}`
-  };
-  if (!serverQueue) {
+};
+if (!serverQueue) {
     const queueConstruct = {
-      textChannel: message.channel,
-      voiceChannel: voiceChannel,
-      connection: null,
-      songs: [],
-      volume: process.env.VOLUME,
-      playing: true,
-      loop: false
+        textChannel: message.channel,
+        voiceChannel: voiceChannel,
+        connection: null,
+        songs: [],
+        volume: 100,
+        playing: true,
+        loop: false
     };
     queue.set(message.guild.id, queueConstruct);
     queueConstruct.songs.push(song);
 
     try {
-      var connection = await voiceChannel.join();
-      queueConstruct.connection = connection;
-      play(message.guild, queueConstruct.songs[0]);
+        var connection = await voiceChannel.join();
+        queueConstruct.connection = connection;
+        play(message.guild, queueConstruct.songs[0]);
     } catch (error) {
-      console.error(
-        `[ERROR] I could not join the voice channel, because: ${error}`
-      );
-      queue.delete(message.guild.id);
-      return message.channel.send(
-        `I could not join the voice channel, because: **\`${error}\`**`
-      );
+        console.error(`[ERROR] I could not join the voice channel, because: ${error}`);
+        queue.delete(message.guild.id);
+        return message.channel.send({embed: {color: "RED", description: `I could not join the voice channel, because: **\`${error}\`**`}});
     }
-  } else {
+} else {
     serverQueue.songs.push(song);
     if (playlist) return;
-    else
-      return message.channel.send(
-        `✅  **|**  **\`${song.title}\`** has been added to the queue! 😉`
-      );
-  }
-  return;
+    else return message.channel.send({embed: {color: "GREEN", description: `✅  **|**  **\`${song.title}\`** has been added to the queue`}});
+}
+return;
 }
 
 function play(guild, song) {
-  const serverQueue = queue.get(guild.id);
+const serverQueue = queue.get(guild.id);
 
-  if (!song) {
+if (!song) {
     serverQueue.voiceChannel.leave();
     return queue.delete(guild.id);
-  }
+}
 
-  const dispatcher = serverQueue.connection
-    .play(ytdl(song.url))
+const dispatcher = serverQueue.connection.play(ytdl(song.url))
     .on("finish", () => {
-      const shiffed = serverQueue.songs.shift();
-      if (serverQueue.loop === true) {
-        serverQueue.songs.push(shiffed);
-      }
-      play(guild, serverQueue.songs[0]);
+        const shiffed = serverQueue.songs.shift();
+        if (serverQueue.loop === true) {
+            serverQueue.songs.push(shiffed);
+        };
+        play(guild, serverQueue.songs[0]);
     })
     .on("error", error => console.error(error));
-  dispatcher.setVolume(process.env.VOLUME / 100);
+dispatcher.setVolume(serverQueue.volume / 100);
 
-  serverQueue.textChannel.send({
+serverQueue.textChannel.send({
     embed: {
-      color: 0xa51aff,
-      description: `🎶  **|**  Playing: **\`${song.title}\`**`
+        color: "BLUE",
+        description: `🎶  **|**  Start Playing: **\`${song.title}\`**`
     }
-  });
+});
 }
 var express = require("express");
 var http = require("http");
