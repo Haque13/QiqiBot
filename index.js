@@ -153,13 +153,13 @@ bot.on("message", async (message) => { // eslint-disable-line
             return handleVideo(video, message, voiceChannel);
         }
 
-    } else if (command === "skip") {
+    } else if (command === "skip" || command === "s")  {
         if (!message.member.voice.channel) return message.channel.send({embed: {color: 0xa51aff, description: "I'm sorry, but you need to be in a voice channel to skip a music!"}});
         if (!serverQueue) return message.channel.send({embed: {color: 0xa51aff, description: "There is nothing playing that I could skip for you"}});
         serverQueue.connection.dispatcher.end("[runCmd] Skip command has been used");
         return message.channel.send({embed: {color: 0xa51aff, description: "⏭️  **|**  I skipped the song for you"}});
 
-    } else if (command === "stop") {
+    } else if (command === "stop" || command === "uit") {
         if (!message.member.voice.channel) return message.channel.send({embed: {color: 0xa51aff, description: "I'm sorry but you need to be in a voice channel to play music!"}});
         if (!serverQueue) return message.channel.send({embed: {color: 0xa51aff, description: "There is nothing playing that I could stop for you"}});
         serverQueue.songs = [];
@@ -171,7 +171,7 @@ bot.on("message", async (message) => { // eslint-disable-line
         if (!serverQueue) return message.channel.send({embed: {color: 0xa51aff, description: "There is nothing playing"}});
         if (!args[1]) return message.channel.send({embed: {color: 0xa51aff, description: `The current volume is: **\`${serverQueue.volume}%\`**`}});
         if (isNaN(args[1]) || args[1] > 100) return message.channel.send({embed: {color: 0xa51aff, description: "Volume only can be set in a range of **\`1\`** - **\`100\`**"}});
-        serverQueue.volume = args[1];
+        process.env.VOLUME = args[1];
         serverQueue.connection.dispatcher.setVolume(args[1] / 100);
         return message.channel.send({embed: {color: 0xa51aff, description: `I set the volume to: **\`${args[1]}%\`**`}});
 
@@ -188,7 +188,7 @@ bot.on("message", async (message) => { // eslint-disable-line
             .setFooter(`• Now Playing: ${serverQueue.songs[0].title}`);
         return message.channel.send(embedQueue);
 
-    } else if (command === "pause") {
+    } else if (command === "pause" || command === "ps") {
         if (serverQueue && serverQueue.playing) {
             serverQueue.playing = false;
             serverQueue.connection.dispatcher.pause();
@@ -196,7 +196,7 @@ bot.on("message", async (message) => { // eslint-disable-line
         }
         return message.channel.send({embed: {color: 0xa51aff, description: "There is nothing playing"}});
 
-    } else if (command === "resume") {
+    } else if (command === "resume" || command === "res") {
         if (serverQueue && !serverQueue.playing) {
             serverQueue.playing = true;
             serverQueue.connection.dispatcher.resume();
@@ -225,7 +225,7 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
             voiceChannel: voiceChannel,
             connection: null,
             songs: [],
-            volume: 100,
+            volume: process.env.VOLUME,
             playing: true,
             loop: false
         };
@@ -266,7 +266,7 @@ function play(guild, song) {
             play(guild, serverQueue.songs[0]);
         })
         .on("error", error => console.error(error));
-    dispatcher.setVolume(serverQueue.volume / 100);
+    dispatcher.setVolume(process.env.VOLUME / 100);
 
     serverQueue.textChannel.send({
         embed: {
