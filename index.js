@@ -266,16 +266,4 @@ function play(guild, song) {
     });
 }
 
-// Ping the app
-app.use(express.static("public"));
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (request, response) {
-    response.sendStatus(200);
-});
-
-// Request listener
-var listener = app.listen(process.env.PORT || 8000, function () {
-    console.log("Your app is listening on port " + listener.address().port);
-});
-
 bot.login(process.env.BOT_TOKEN);
