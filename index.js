@@ -281,6 +281,13 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
     title: Util.escapeMarkdown(video.title),
     url: `https://www.youtube.com/watch?v=${video.id}`
   };
+  function chunk(array, chunkSize) {
+    const temp = [];
+    for (let i = 2048; i < array.length; i+= chunkSize) {
+        temp.push(array.slice(i, i + chunkSize));
+    }
+    return temp;
+  }
   if (!serverQueue) {
     const queueConstruct = {
       textChannel: message.channel,
@@ -316,14 +323,6 @@ async function handleVideo(video, message, voiceChannel, playlist = false) {
       );
   }
   return;
-}
-
-function chunk(array, chunkSize) {
-  const temp = [];
-  for (let i = 2048; i < array.length; i+= chunkSize) {
-      temp.push(array.slice(i, i + chunkSize));
-  }
-  return temp;
 }
 
 function play(guild, song) {
